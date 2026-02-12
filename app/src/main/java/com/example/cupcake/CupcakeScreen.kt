@@ -16,6 +16,7 @@
 package com.example.cupcake
 
 import android.annotation.SuppressLint
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -45,15 +46,20 @@ import com.example.cupcake.ui.OrderSummaryScreen
 import com.example.cupcake.ui.SelectOptionScreen
 import com.example.cupcake.ui.StartOrderScreen
 
-//Koda 1st prompt 1st attempt
+//Koda 1st prompt 2nd attempt
+/**
+ * Отлично, всё работает! Но нужно ещё, чтобы в title в функции CupcakeAppBar выводилось различное
+ * название в зависиомсти от различных открытых экранов. Используй для этого переменную currentScreen
+ * из CupcakeApp
+ */
 /**
  * Enum class representing the different screens in the Cupcake app.
  */
-enum class CupcakeScreen(val title: String) {
-    Start("Order Cupcakes"),
-    Flavor("Choose Flavor"),
-    Pickup("Choose Pickup Date"),
-    Summary("Order Summary")
+enum class CupcakeScreen(@StringRes val title: Int) {
+    Start(R.string.order_cupcakes),
+    Flavor(R.string.choose_flavor),
+    Pickup(R.string.choose_pickup_date),
+    Summary(R.string.order_summary)
 }
 
 /**
@@ -61,12 +67,13 @@ enum class CupcakeScreen(val title: String) {
  */
 @Composable
 fun CupcakeAppBar(
+    currentScreen: CupcakeScreen,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
-        title = { Text(stringResource(id = R.string.app_name)) },
+        title = { Text(stringResource(currentScreen.title)) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -100,6 +107,7 @@ fun CupcakeApp(
     Scaffold(
         topBar = {
             CupcakeAppBar(
+                currentScreen = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() }
             )
