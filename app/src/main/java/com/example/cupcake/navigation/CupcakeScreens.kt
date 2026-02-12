@@ -15,13 +15,16 @@
  */
 package com.example.cupcake.navigation
 
+import androidx.annotation.StringRes
+import com.example.cupcake.R
+
 /**
  * Enum class for the different screens in the Cupcake application
  */
-enum class CupcakeScreen {
-    Start,
-    Flavor,
-    Pickup,
-    Summary
+enum class CupcakeScreen(@StringRes val title: Int) {
+    Start(title = R.string.app_name),
+    Flavor(title = R.string.choose_flavor),
+    Pickup(title = R.string.choose_pickup_date),
+    Summary(title = R.string.order_summary)
 }
 

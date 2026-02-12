@@ -30,10 +30,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -44,6 +40,17 @@ import androidx.compose.ui.unit.dp
 import com.example.cupcake.R
 import com.example.cupcake.data.DataSource
 import com.example.cupcake.ui.theme.CupcakeTheme
+
+//Github Copilot 1st prompt 2nd attempt
+/**
+ * Работает! Но обрати внимание на неиспользуемый параметр currentScreen в CupcakeAppBar. По
+ * изменению его значений должен меняться тайтл TopAppBar-а. Проще всего будет сделать это добавив в
+ * enum class CupcakeScreen одноимённый stringres параметр.
+ * Также обрати внимание на переменную selectedQuantity в StartOrderScreen. Она не требуется для
+ * выполнения задания.
+ * Ещё прошу тебя не трогать неиспользуемые переменные newOrder и orderSummary в OrderSummaryScreen.
+ * Они понадобятся в дальнейшем
+ */
 
 /**
  * Composable that allows the user to select the desired cupcake quantity and expects
@@ -56,7 +63,6 @@ fun StartOrderScreen(
     onNextButtonClicked: (Int) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    var selectedQuantity by rememberSaveable { mutableStateOf(0) }
 
     Column(
         modifier = modifier,
@@ -91,7 +97,6 @@ fun StartOrderScreen(
                 SelectQuantityButton(
                     labelResourceId = item.first,
                     onClick = {
-                        selectedQuantity = item.second
                         onNextButtonClicked(item.second)
                     }
                 )
