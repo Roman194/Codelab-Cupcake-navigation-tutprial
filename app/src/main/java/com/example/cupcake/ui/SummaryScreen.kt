@@ -129,6 +129,8 @@ fun OrderSummaryPreview() {
     CupcakeTheme {
         OrderSummaryScreen(
             orderUiState = OrderUiState(0, "Test", "Test", "$300.00"),
+            onCancelButtonClicked = {},
+            onSendButtonClicked = {},
             modifier = Modifier.fillMaxHeight()
         )
     }

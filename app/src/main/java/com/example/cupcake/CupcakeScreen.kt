@@ -15,6 +15,7 @@
  */
 package com.example.cupcake
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -43,25 +44,21 @@ import com.example.cupcake.ui.OrderViewModel
 import com.example.cupcake.ui.SelectOptionScreen
 import com.example.cupcake.ui.StartOrderScreen
 
-//Qodo 1st prompt 2nd attempt
-/**
- * Хорошо! Добавь в файлы всё, что ты написал выше (произведи донастрйку UI-экранов). Также обрати
- * внимание на содержимое DataSource.flavors.map в SelectOptionScreen: first является unresolved
- * reference, а значит мапить данные нужно как-то иначе.
- * Ещё обрати внимание на то, что title в CupcakeAppBar должен задаваться от значения currentScreen
- * из CupcakeApp. Для этого его нужно передать в качестве параметра функции
- */
-
 /**
  * All possible screens in the Cupcake app.
  */
-enum class CupcakeScreen {
-    Start,
-    Flavor,
-    Pickup,
-    Summary
+enum class CupcakeScreen(@StringRes val titleRes: Int) {
+    Start(R.string.app_name),
+    Flavor(R.string.choose_flavor),
+    Pickup(R.string.choose_pickup_date),
+    Summary(R.string.order_summary)
 }
-
+//Qodo 1st prompt 3rd attempt
+/**
+* Понял! Тогда добавь ещё пожалуйста исправления для превью и заметь, что с enum классом CupcakeScreen
+ * можно сделать обновление тайтла проще: достаточно просто добавить одноимённый параметр для enum-класса.
+ * Сделай это. Также не забудь, что этот параметр не просто строка, а StringRes
+ */
 /**
  * Composable that displays the topBar and displays back button if back navigation is possible.
  */
@@ -72,15 +69,8 @@ fun CupcakeAppBar(
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val title = when (currentScreen) {
-        CupcakeScreen.Start -> stringResource(R.string.app_name)
-        CupcakeScreen.Flavor -> stringResource(R.string.choose_flavor)
-        CupcakeScreen.Pickup -> stringResource(R.string.choose_pickup_date)
-        CupcakeScreen.Summary -> stringResource(R.string.order_summary)
-    }
-
     TopAppBar(
-        title = { Text(title) },
+        title = { Text(stringResource(currentScreen.titleRes)) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
