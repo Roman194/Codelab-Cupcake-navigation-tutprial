@@ -41,30 +41,26 @@ import com.example.cupcake.ui.OrderSummaryScreen
 import com.example.cupcake.ui.SelectOptionScreen
 import com.example.cupcake.ui.StartOrderScreen
 
-//GigaCode 1st prompt 2nd attempt
+//GigaCode 1st prompt 3rd attempt
 /**
- * Код не запускается. Обрати внимание на файлы SelectOptionScreen.kt, StartOrderScreen.kt и
- * SummaryScreen.kt. Дело в том, что эти файлы тоже нужно модифицировать: добавить аргументы
- * для корректной обработки событий кликов на кнопки onCancelButtonClicked и
- * onNextButtonClicked, а также найти сами UI-элементы этих кнопок, куда надо вставить эти
- * аргументы как триггеры событий. Ещё хочу обрартить внимание на то, что Composable-функция,
- * которую нужно вызвать из файла SummaryScreen, называется OrderSummaryScreen.
- * Также хочу заметить, что никакого аргумента subHeader ни в одной из функций не предусмотрено.
- * Ещё перепроверь содержимое файлов OrderViewModel.kt и strings.xml, так как некоторые
- * названия методов и строк ресурсов в файле CupcakeScreen.kt не соответствуют никаким из
- * существующих
+ * Код всё ещё не запускается. Уточни пожалуйста ещё раз все возможные значения,
+ * которые может передать uiState как переменная типа OrderUiState.
+ * Также передай в CupcakeAppBar параметр currentScreen и сделай так, чтобы title выводил
+ * именно значение currentScreen.title
  */
+
 /**
  * Composable that displays the topBar and displays back button if back navigation is possible.
  */
 @Composable
 fun CupcakeAppBar(
+    currentScreen: CupcakeScreen,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
-        title = { Text(stringResource(id = R.string.app_name)) },
+        title = { Text(stringResource(currentScreen.title)) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -85,8 +81,11 @@ fun CupcakeAppBar(
 /**
  * Enum class for Cupcake screens
  */
-enum class CupcakeScreen {
-    START, FLAVOR, PICKUP, SUMMARY
+enum class CupcakeScreen(val title: Int) {
+    START(R.string.app_name),
+    FLAVOR(R.string.choose_flavor),
+    PICKUP(R.string.choose_pickup_date),
+    SUMMARY(R.string.order_summary)
 }
 
 @Composable
@@ -98,7 +97,10 @@ fun CupcakeApp(
 
     Scaffold(
         topBar = {
+            val currentScreen by navController.currentBackStackEntryFlow.collectAsState()
+            val currentCupcakeScreen = CupcakeScreen.valueOf(currentScreen.destination.route ?: "")
             CupcakeAppBar(
+                currentScreen = currentCupcakeScreen,
                 canNavigateBack = canNavigateBack,
                 navigateUp = { navController.navigateUp() }
             )
