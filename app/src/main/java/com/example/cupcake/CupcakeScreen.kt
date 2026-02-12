@@ -45,14 +45,11 @@ import com.example.cupcake.ui.OrderSummaryScreen
 import com.example.cupcake.ui.SelectOptionScreen
 import com.example.cupcake.ui.StartOrderScreen
 
-//qodoCL 1st prompt 2nd attempt
+//QodoCL 1st prompt 3rd attempt
 /**
- * Работает! Но есть баг с отсуствием появления кнопки возврата на предыдущий экран в TopAppBar: её
- * нет на всех экранах. Также хочу обратить внимание, что тайтл в этом же элементе должен изменяться
- * в зависимости от текущего открытого экрана (currentScreen). Проще всего это сделать, если задать
- * для CupcakeScreen enum-класса stringres параметр title
+ * Отлично! Но можно оптимизировать инициализацию переменной currentScreen за счёт использования
+ * CupcakeScreen.valueOf. Давай сделаем это!
  */
-
 /**
  * Enum class for the different screens in the Cupcake app
  */
@@ -101,13 +98,13 @@ fun CupcakeApp(
     
     // Get the current screen from the back stack
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = when (backStackEntry?.destination?.route) {
-        CupcakeScreen.Start.name -> CupcakeScreen.Start
-        CupcakeScreen.Flavor.name -> CupcakeScreen.Flavor
-        CupcakeScreen.Pickup.name -> CupcakeScreen.Pickup
-        CupcakeScreen.Summary.name -> CupcakeScreen.Summary
-        else -> CupcakeScreen.Start
-    }
+    val currentScreen = backStackEntry?.destination?.route?.let { route ->
+        try {
+            CupcakeScreen.valueOf(route)
+        } catch (e: IllegalArgumentException) {
+            CupcakeScreen.Start
+        }
+    } ?: CupcakeScreen.Start
     
     // Determine if we can navigate back (not on Start screen)
     val canNavigateBack = currentScreen != CupcakeScreen.Start
