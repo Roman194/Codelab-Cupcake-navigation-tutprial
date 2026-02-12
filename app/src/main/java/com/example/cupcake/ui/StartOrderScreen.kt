@@ -43,12 +43,12 @@ import com.example.cupcake.ui.theme.CupcakeTheme
 
 /**
  * Composable that allows the user to select the desired cupcake quantity and expects
- * [onNextButtonClicked] lambda that expects the selected quantity and triggers the navigation to
+ * [onSubmitClicked] lambda that expects the selected quantity and triggers the navigation to
  * next screen
  */
 @Composable
 fun StartOrderScreen(
-    quantityOptions: List<Pair<Int, Int>>,
+    onSubmitClicked: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -80,10 +80,10 @@ fun StartOrderScreen(
                 dimensionResource(id = R.dimen.padding_medium)
             )
         ) {
-            quantityOptions.forEach { item ->
+            DataSource.quantityOptions.forEach { item ->
                 SelectQuantityButton(
                     labelResourceId = item.first,
-                    onClick = {}
+                    onClick = { onSubmitClicked(item.second) }
                 )
             }
         }
@@ -113,10 +113,11 @@ fun SelectQuantityButton(
 fun StartOrderPreview() {
     CupcakeTheme {
         StartOrderScreen(
-            quantityOptions = DataSource.quantityOptions,
+            onSubmitClicked = {},
             modifier = Modifier
                 .fillMaxSize()
                 .padding(dimensionResource(R.dimen.padding_medium))
         )
     }
 }
+

@@ -37,11 +37,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cupcake.ui.OrderViewModel
+import com.example.cupcake.ui.OrderSummaryScreen
 import com.example.cupcake.ui.SelectOptionScreen
 import com.example.cupcake.ui.StartOrderScreen
-import com.example.cupcake.ui.SummaryScreen
 
-//GigaCode 1st prompt 1st attempt
+//GigaCode 1st prompt 2nd attempt
+/**
+ * Код не запускается. Обрати внимание на файлы SelectOptionScreen.kt, StartOrderScreen.kt и
+ * SummaryScreen.kt. Дело в том, что эти файлы тоже нужно модифицировать: добавить аргументы
+ * для корректной обработки событий кликов на кнопки onCancelButtonClicked и
+ * onNextButtonClicked, а также найти сами UI-элементы этих кнопок, куда надо вставить эти
+ * аргументы как триггеры событий. Ещё хочу обрартить внимание на то, что Composable-функция,
+ * которую нужно вызвать из файла SummaryScreen, называется OrderSummaryScreen.
+ * Также хочу заметить, что никакого аргумента subHeader ни в одной из функций не предусмотрено.
+ * Ещё перепроверь содержимое файлов OrderViewModel.kt и strings.xml, так как некоторые
+ * названия методов и строк ресурсов в файле CupcakeScreen.kt не соответствуют никаким из
+ * существующих
+ */
 /**
  * Composable that displays the topBar and displays back button if back navigation is possible.
  */
@@ -101,9 +113,8 @@ fun CupcakeApp(
         ) {
             composable(CupcakeScreen.START.name) {
                 StartOrderScreen(
-                    quantity = uiState.quantity,
                     onSubmitClicked = { quantity ->
-                        viewModel.updateQuantity(quantity)
+                        viewModel.setQuantity(quantity)
                         navController.navigate(CupcakeScreen.FLAVOR.name)
                     }
                 )
@@ -111,10 +122,10 @@ fun CupcakeApp(
 
             composable(CupcakeScreen.FLAVOR.name) {
                 SelectOptionScreen(
-                    subHeader = stringResource(R.string.choose_flavor_header),
+                    subtotal = uiState.price,
                     options = uiState.possibleFlavors,
                     onSelectionChanged = { selectedOption ->
-                        viewModel.updateFlavor(selectedOption)
+                        viewModel.setFlavor(selectedOption)
                     },
                     onCancelButtonClicked = { cancelOrderAndNavigateToStart(viewModel, navController) },
                     onNextButtonClicked = {
@@ -125,10 +136,10 @@ fun CupcakeApp(
 
             composable(CupcakeScreen.PICKUP.name) {
                 SelectOptionScreen(
-                    subHeader = stringResource(R.string.choose_pickup_date_header),
+                    subtotal = uiState.price,
                     options = uiState.possibleDates,
                     onSelectionChanged = { selectedOption ->
-                        viewModel.updateDate(selectedOption)
+                        viewModel.setDate(selectedOption)
                     },
                     onCancelButtonClicked = { cancelOrderAndNavigateToStart(viewModel, navController) },
                     onNextButtonClicked = {
@@ -138,7 +149,7 @@ fun CupcakeApp(
             }
 
             composable(CupcakeScreen.SUMMARY.name) {
-                SummaryScreen(
+                OrderSummaryScreen(
                     orderUiState = uiState,
                     onCancelButtonClicked = { cancelOrderAndNavigateToStart(viewModel, navController) },
                     onSendButtonClicked = { /* TODO: send order */ }
