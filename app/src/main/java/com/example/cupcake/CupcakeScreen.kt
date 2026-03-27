@@ -34,6 +34,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.cupcake.data.DataSource
 import com.example.cupcake.ui.OrderViewModel
@@ -41,12 +42,11 @@ import com.example.cupcake.ui.OrderSummaryScreen
 import com.example.cupcake.ui.SelectOptionScreen
 import com.example.cupcake.ui.StartOrderScreen
 
-//Cline 1st prompt 2nd attempt
+//Cline 1st prompt 3rd attempt
 /**
- * Есть ряд синтаксических ошибок в CupcakeScreen.kt. Argument type mismatch: actual type is
- * 'PaddingValues', but 'Modifier' was expected в строке, где modifier = Modifier.then(innerPadding).
- * Также в cancelOrderAndNavigateToStart вызывается несуществующий метод navController. Вероятно
- * есть какой-то похожий по сути и названию
+ * Код запустился, однако title на TopAppBar не обновляется должным образом. Также IconButton не
+ * появляется на экранах, где возможна навигация назад. При нажатии на кнопку Cancel выводится
+ * пустой экран вместо стартового. Реши эти баги пожалуйста
  */
 /**
  * Enum class representing the different screens in the Cupcake app.
@@ -98,18 +98,19 @@ fun CupcakeApp(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    // Determine if we can navigate back based on current destination
-    val canNavigateBack = navController.previousBackStackEntry != null
-
     // Get the current destination to set the appropriate title
-    val currentDestination = navController.currentBackStackEntry?.destination?.route
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    // Determine if we can navigate back based on current destination
+    val canNavigateBack = currentRoute != CupcakeScreen.Start.name
 
     Scaffold(
         topBar = {
             CupcakeAppBar(
                 canNavigateBack = canNavigateBack,
                 navigateUp = { navController.navigateUp() },
-                title = when (currentDestination) {
+                title = when (currentRoute) {
                     CupcakeScreen.Start.name -> stringResource(id = R.string.app_name)
                     CupcakeScreen.Flavor.name -> stringResource(id = R.string.choose_flavor)
                     CupcakeScreen.Date.name -> stringResource(id = R.string.choose_pickup_date)
@@ -190,5 +191,9 @@ private fun cancelOrderAndNavigateToStart(
     navController: NavHostController
 ) {
     viewModel.resetOrder()
-    navController.popBackStack(CupcakeScreen.Start.name, inclusive = true)
+    navController.navigate(CupcakeScreen.Start.name) {
+        popUpTo(CupcakeScreen.Start.name) {
+            inclusive = true
+        }
+    }
 }
