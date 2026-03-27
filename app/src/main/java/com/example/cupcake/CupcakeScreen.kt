@@ -47,11 +47,10 @@ import com.example.cupcake.ui.OrderSummaryScreen
 import com.example.cupcake.data.DataSource
 import com.example.cupcake.data.OrderUiState
 
-//Cascade Code 1st prompt 2nd attempt
+//Cascade Code 1st prompt 3rd attempt
 /**
-Неплохо, но ты забыл обновить параметры в Preview-функции StartOrderPreview. Также обрати внимание,
-что в CupcakeScreen.kt в onSendButtonClicked несмотря на TO do всё-же нужно проставить передаваемые
-в Unit-функцию аргументы. Без этого код не запускается
+Круто, теперь код запускается! Однако обрати внимание на currentScreen в CupcakeApp. Его значение
+должно передаваться в TopAppBar, чтобы в нём менялся title согласно текущему открытому экрану
  */
 /**
  * Composable that displays the topBar and displays back button if back navigation is possible.
@@ -60,10 +59,11 @@ import com.example.cupcake.data.OrderUiState
 fun CupcakeAppBar(
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
+    currentScreen: CupcakeScreen,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
-        title = { Text(stringResource(id = R.string.app_name)) },
+        title = { Text(stringResource(id = currentScreen.title)) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -95,7 +95,8 @@ fun CupcakeApp(
         topBar = {
             CupcakeAppBar(
                 canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() }
+                navigateUp = { navController.navigateUp() },
+                currentScreen = currentScreen
             )
         }
     ) { innerPadding ->
