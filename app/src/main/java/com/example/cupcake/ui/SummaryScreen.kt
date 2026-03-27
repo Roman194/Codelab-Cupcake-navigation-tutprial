@@ -41,6 +41,7 @@ import com.example.cupcake.R
 import com.example.cupcake.data.OrderUiState
 import com.example.cupcake.ui.components.FormattedPriceLabel
 import com.example.cupcake.ui.theme.CupcakeTheme
+import androidx.compose.runtime.getValue
 
 /**
  * This composable expects [orderUiState] that represents the order state, [onCancelButtonClicked]
@@ -53,7 +54,7 @@ fun SummaryScreen(
     onCancelButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val orderUiState = orderViewModel.uiState.value
+    val orderUiState by orderViewModel.uiState
 
     Column(
         modifier = modifier,
@@ -68,7 +69,7 @@ fun SummaryScreen(
                 style = MaterialTheme.typography.headlineSmall
             )
             Text(
-                text = stringResource(R.string.summary_description),
+                text = stringResource(R.string.order_details, "1", "Vanilla", "Jan 1", "$299.99"),
                 style = MaterialTheme.typography.bodyMedium
             )
             Divider(thickness = dimensionResource(R.dimen.thickness_divider))
@@ -123,7 +124,7 @@ fun SummaryScreen(
                     // and reset the order
                 }
             ) {
-                Text(stringResource(R.string.confirm))
+                Text(stringResource(R.string.send))
             }
         }
     }

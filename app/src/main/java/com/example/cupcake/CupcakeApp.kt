@@ -33,12 +33,12 @@ fun CupcakeApp() {
     val viewModel = OrderViewModel()
     val navController = rememberNavController()
     
+    // Use the initial pickup options from the view model
+    val initialPickupOptions = viewModel.pickupOptions
+    
     val currentScreen = navController.currentDestination?.route?.let { route ->
         CupcakeScreen.valueOf(route.uppercase())
     } ?: CupcakeScreen.START
-    
-    // Use the initial pickup options from the view model
-    val initialPickupOptions = remember { OrderViewModel() }
     val canNavigateBack = currentScreen != CupcakeScreen.START
     
     Scaffold(
@@ -82,14 +82,13 @@ fun CupcakeApp() {
             composable(CupcakeScreen.PICKUP_DATE.name) {
                 SelectOptionScreen(
                     title = R.string.choose_pickup_date,
-                    options = initialPickupOptions.options,
+                    options = initialPickupOptions,
                     onCancelButtonClicked = {
                         viewModel.resetOrder()
                         navController.popBackStack(CupcakeScreen.START.name, false)
                     },
                     onOptionSelected = { option ->
                         viewModel.setDate(option)
-                        viewModel.setPrice(calculatePrice(pickupDate = option))
                     },
                     onNextButtonClicked = {
                         navController.navigate(CupcakeScreen.SUMMARY.name)

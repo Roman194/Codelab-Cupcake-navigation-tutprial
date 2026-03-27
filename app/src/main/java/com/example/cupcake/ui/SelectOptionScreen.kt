@@ -18,8 +18,11 @@ package com.example.cupcake.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Button
@@ -34,15 +37,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.cupcake.R
+import com.example.cupcake.data.DataSource
 import com.example.cupcake.ui.components.FormattedPriceLabel
 import com.example.cupcake.ui.theme.CupcakeTheme
-import com.example.cupcake.data.DataSource
-import androidx.compose.ui.text.font.FontWeight
 
 /**
  * Composable that displays the list of items as [RadioButton] options,
@@ -61,10 +62,37 @@ fun SelectOptionScreen(
 ) {
     var selectedValue by rememberSaveable { mutableStateOf("") }
     Column(
-        modifier = modifier,
+        modifier = modifier.padding(dimensionResource(R.dimen.padding_medium)),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))) {
+        Text(
+            text = stringResource(title),
+            style = MaterialTheme.typography.headlineSmall
+        )
+        options.forEach { item ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .selectable(
+                        selected = selectedValue == item,
+                        onClick = {
+                            selectedValue = item
+                            onOptionSelected(item)
+                        }
+                    ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = selectedValue == item,
+                    onClick = {
+                        selectedValue = item
+                        onOptionSelected(item)
+                    }
+                )
+                Text(item)
+            }
+        }
             Text(
                 text = stringResource(title),
                 style = MaterialTheme.typography.headlineSmall
@@ -77,7 +105,7 @@ fun SelectOptionScreen(
                             selectedValue = item
                             onOptionSelected(item)
                         }
-                    ),
+                    ).fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     RadioButton(
@@ -103,13 +131,7 @@ fun SelectOptionScreen(
                         bottom = dimensionResource(R.dimen.padding_medium)
                     )
             )
-            // This is a placeholder for the actual price from the view model
-            Text(
-                text = stringResource(R.string.total_price),
-                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                modifier = Modifier.align(Alignment.End)
-            )
-        }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -141,11 +163,10 @@ fun SelectOptionPreview() {
     CupcakeTheme {
         SelectOptionScreen(
             title = R.string.choose_flavor,
-            options = DataSource.flavors,
+            options = DataSource.flavors.map { stringResource(it) },
             onCancelButtonClicked = {},
             onOptionSelected = {},
-            onNextButtonClicked = {},
-            modifier = Modifier.fillMaxHeight()
+            onNextButtonClicked = {}
         )
     }
 }

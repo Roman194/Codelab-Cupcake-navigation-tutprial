@@ -51,9 +51,10 @@ import com.example.cupcake.ui.theme.CupcakeTheme
 fun StartOrderScreen(
     viewModel: OrderViewModel = viewModel(),
     onNextButtonClicked: (Int) -> Unit,
+    quantityOptions: List<Pair<Int, Int>> = DataSource.quantityOptions,
     modifier: Modifier = Modifier
 ) {
-    val quantityOptions = DataSource.quantityOptions
+    // Use the parameter instead of the hardcoded DataSource
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.SpaceBetween

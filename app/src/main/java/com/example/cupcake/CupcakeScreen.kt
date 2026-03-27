@@ -1,18 +1,16 @@
 package com.example.cupcake
 
-//Lingma 1st prompt 2nd attempt
 
+//Lingma 1st prompt 3rd attempt
 /**
- * Код не запускается. В StartOrderScreen не найден аргумент quantityOptions, который ранее там был.
- * Верни его пожалуйста. Аналогично с SelectOptionChanged и аргументом subtotal. В общем перепроверь
- * соответствие аргументов и параметров вызываемых функций в CupcakeApp composable. При конфликтах
- * лучше ориентироваться на параметры функций, так как они выглядят правильнее чем их аргументы.
- * Также сверься с OrderViewModel на предмет названий вызываемых свойств. Допустим,
- * viewModel.pickupDates не найдено IDE. Вероятно оно называется во ViewModel как-то похоже, но иначе.
- * Не забудь про @Preview-функции в рамках файлов StartOptionScreen, SelectOptionScreen и SummaryScreen!
- * Они тоже должны иметь параметры, соответствующие аргументам соответствующих Composable-функций
+ * Код всё ещё не запускается! При вызове SelectOptionScreen в параметре options ты используешь
+ * DataSource.flavors, а он идёт как List<int>, а не List<string>. Аналогичная проблема есть в
+ * SelectOptionScreen.kt в SelectOptionPreview. Также в CupakeApp.kt при вызове onOptionSelected во
+ * viewModel не найден метод setPrice. В SummaryScreen содержится ряд ссылок на несуществующие ресурсы:
+ * R.string.summary_description и R.string.confirm, а также при вызове orderViewModel.uiState.value
+ * возникает следующая ошибка: StateFlow.value should not be called within composition. В
+ * OrderViewModel.kt в pickupOptions есть ссылка на несущестующую переменную: DataSource.pickupDates
  */
-
 enum class CupcakeScreen {
     START,
     FLAVOR,

@@ -112,6 +112,23 @@ class OrderViewModel : ViewModel() {
      */
     // Get the initial pickup options from the data source
     fun pickupOptions(): List<String> {
-        return DataSource.pickupDates
+        val options = mutableListOf<String>()
+        val calendar = Calendar.getInstance()
+        
+        // Add current date
+        options.add(getFormattedDate(calendar.timeInMillis))
+        
+        // Add next 3 days
+        repeat(3) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+            options.add(getFormattedDate(calendar.timeInMillis))
+        }
+        
+        return options
+    }
+
+    private fun getFormattedDate(milliseconds: Long): String {
+        val dateFormat = SimpleDateFormat("MMM d", Locale.getDefault())
+        return dateFormat.format(milliseconds)
     }
 }
