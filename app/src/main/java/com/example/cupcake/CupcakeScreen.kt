@@ -45,8 +45,12 @@ import com.example.cupcake.ui.OrderSummaryScreen
 import com.example.cupcake.ui.OrderViewModel
 import com.example.cupcake.ui.SelectOptionScreen
 import com.example.cupcake.ui.StartOrderScreen
+//Amazon q 1st prompt 2nd attempt
+/**
+ * Неплохо, но ты забыл исправить Preview в StartOrderScreen.kt. Без этого код к сожалению не
+ * запускается
+ */
 
-//Amazon q 1st prompt 1st attempt
 enum class CupcakeScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
     Flavor(title = R.string.choose_flavor),
