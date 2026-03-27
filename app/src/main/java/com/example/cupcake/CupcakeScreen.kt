@@ -47,7 +47,12 @@ import com.example.cupcake.ui.OrderSummaryScreen
 import com.example.cupcake.data.DataSource
 import com.example.cupcake.data.OrderUiState
 
-//Cascade code 1st prompt 1st attempt
+//Cascade Code 1st prompt 2nd attempt
+/**
+Неплохо, но ты забыл обновить параметры в Preview-функции StartOrderPreview. Также обрати внимание,
+что в CupcakeScreen.kt в onSendButtonClicked несмотря на TO do всё-же нужно проставить передаваемые
+в Unit-функцию аргументы. Без этого код не запускается
+ */
 /**
  * Composable that displays the topBar and displays back button if back navigation is possible.
  */
@@ -149,7 +154,7 @@ fun CupcakeApp(
                     onCancelButtonClicked = {
                         cancelOrderAndNavigateToStart(viewModel, navController)
                     },
-                    onSendButtonClicked = { 
+                    onSendButtonClicked = { _, _ -> 
                         // TODO: Implement order sending functionality
                     },
                     modifier = Modifier.fillMaxHeight()
