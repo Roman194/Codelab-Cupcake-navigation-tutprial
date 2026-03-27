@@ -46,7 +46,11 @@ import com.example.cupcake.ui.OrderViewModel
 import com.example.cupcake.ui.SelectOptionScreen
 import com.example.cupcake.ui.StartOrderScreen
 
-//Zencoder 1st prompt 1st attempt
+//Zencoder 1st prompt 2nd attempt
+/**
+ * Неплохо, но ты забыл добавить новые параметры в Preview-функциях StartOrderPreview и
+ * OrderSummaryPreview. Без этого код не запускается!
+ */
 /**
  * enum values that represent the screens in the app
  */
