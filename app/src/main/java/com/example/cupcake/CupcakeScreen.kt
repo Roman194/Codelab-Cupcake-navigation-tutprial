@@ -15,6 +15,7 @@
  */
 package com.example.cupcake
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -40,7 +41,13 @@ import com.example.cupcake.ui.OrderSummaryScreen
 import com.example.cupcake.ui.SelectOptionScreen
 import com.example.cupcake.ui.StartOrderScreen
 
-//Cline 1st prompt 1st attempt
+//Cline 1st prompt 2nd attempt
+/**
+ * Есть ряд синтаксических ошибок в CupcakeScreen.kt. Argument type mismatch: actual type is
+ * 'PaddingValues', but 'Modifier' was expected в строке, где modifier = Modifier.then(innerPadding).
+ * Также в cancelOrderAndNavigateToStart вызывается несуществующий метод navController. Вероятно
+ * есть какой-то похожий по сути и названию
+ */
 /**
  * Enum class representing the different screens in the Cupcake app.
  */
@@ -115,7 +122,7 @@ fun CupcakeApp(
         NavHost(
             navController = navController,
             startDestination = CupcakeScreen.Start.name,
-            modifier = Modifier.then(innerPadding)
+            modifier = Modifier.padding(innerPadding)
         ) {
             composable(CupcakeScreen.Start.name) {
                 StartOrderScreen(
@@ -183,7 +190,5 @@ private fun cancelOrderAndNavigateToStart(
     navController: NavHostController
 ) {
     viewModel.resetOrder()
-    navController.popToStack(CupcakeScreen.Start.name) {
-        inclusive = true
-    }
+    navController.popBackStack(CupcakeScreen.Start.name, inclusive = true)
 }
