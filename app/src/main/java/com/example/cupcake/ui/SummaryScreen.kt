@@ -36,6 +36,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cupcake.R
 import com.example.cupcake.data.OrderUiState
 import com.example.cupcake.ui.components.FormattedPriceLabel
@@ -48,7 +49,7 @@ import com.example.cupcake.ui.theme.CupcakeTheme
  */
 @Composable
 fun SummaryScreen(
-    orderViewModel: OrderViewModel,
+    orderViewModel: OrderViewModel = viewModel(),
     onCancelButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -132,8 +133,9 @@ fun SummaryScreen(
 @Composable
 fun OrderSummaryPreview() {
     CupcakeTheme {
-        OrderSummaryScreen(
-            orderUiState = OrderUiState(0, "Test", "Test", "$300.00"),
+        SummaryScreen(
+            orderViewModel = OrderViewModel(),
+            onCancelButtonClicked = {},
             modifier = Modifier.fillMaxHeight()
         )
     }

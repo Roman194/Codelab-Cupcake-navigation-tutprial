@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import com.example.cupcake.data.OrderUiState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -36,6 +37,8 @@ fun CupcakeApp() {
         CupcakeScreen.valueOf(route.uppercase())
     } ?: CupcakeScreen.START
     
+    // Use the initial pickup options from the view model
+    val initialPickupOptions = remember { OrderViewModel() }
     val canNavigateBack = currentScreen != CupcakeScreen.START
     
     Scaffold(
@@ -53,7 +56,7 @@ fun CupcakeApp() {
         ) {
             composable(CupcakeScreen.START.name) {
                 StartOrderScreen(
-                    quantityOptions = DataSource.quantityOptions,
+                    viewModel = viewModel,
                     onNextButtonClicked = { selectedQuantity ->
                         viewModel.setQuantity(selectedQuantity)
                         navController.navigate(CupcakeScreen.FLAVOR.name)
@@ -63,13 +66,13 @@ fun CupcakeApp() {
             
             composable(CupcakeScreen.FLAVOR.name) {
                 SelectOptionScreen(
-                    subtotal = viewModel.uiState.value.price,
-                    options = viewModel.flavors,
-                    onSelectionChanged = { viewModel.setFlavor(it) },
+                    title = R.string.choose_flavor,
+                    options = DataSource.flavors,
                     onCancelButtonClicked = {
                         viewModel.resetOrder()
                         navController.popBackStack(CupcakeScreen.START.name, false)
                     },
+                    onOptionSelected = { viewModel.setFlavor(it) },
                     onNextButtonClicked = {
                         navController.navigate(CupcakeScreen.PICKUP_DATE.name)
                     }
@@ -78,12 +81,15 @@ fun CupcakeApp() {
             
             composable(CupcakeScreen.PICKUP_DATE.name) {
                 SelectOptionScreen(
-                    subtotal = viewModel.uiState.value.price,
-                    options = viewModel.pickupDates,
-                    onSelectionChanged = { viewModel.setDate(it) },
+                    title = R.string.choose_pickup_date,
+                    options = initialPickupOptions.options,
                     onCancelButtonClicked = {
                         viewModel.resetOrder()
                         navController.popBackStack(CupcakeScreen.START.name, false)
+                    },
+                    onOptionSelected = { option ->
+                        viewModel.setDate(option)
+                        viewModel.setPrice(calculatePrice(pickupDate = option))
                     },
                     onNextButtonClicked = {
                         navController.navigate(CupcakeScreen.SUMMARY.name)
@@ -93,12 +99,12 @@ fun CupcakeApp() {
             
             composable(CupcakeScreen.SUMMARY.name) {
                 SummaryScreen(
-                    orderUiState = viewModel.uiState.value,
-                    modifier = Modifier.fillMaxWidth(),
+                    orderViewModel = viewModel,
                     onCancelButtonClicked = {
                         viewModel.resetOrder()
                         navController.popBackStack(CupcakeScreen.START.name, false)
-                    }
+                    },
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }

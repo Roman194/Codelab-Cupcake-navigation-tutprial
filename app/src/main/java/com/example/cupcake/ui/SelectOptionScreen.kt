@@ -41,6 +41,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.cupcake.R
 import com.example.cupcake.ui.components.FormattedPriceLabel
 import com.example.cupcake.ui.theme.CupcakeTheme
+import com.example.cupcake.data.DataSource
+import androidx.compose.ui.text.font.FontWeight
 
 /**
  * Composable that displays the list of items as [RadioButton] options,
@@ -58,7 +60,6 @@ fun SelectOptionScreen(
     modifier: Modifier = Modifier
 ) {
     var selectedValue by rememberSaveable { mutableStateOf("") }
-
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.SpaceBetween
@@ -102,6 +103,12 @@ fun SelectOptionScreen(
                         bottom = dimensionResource(R.dimen.padding_medium)
                     )
             )
+            // This is a placeholder for the actual price from the view model
+            Text(
+                text = stringResource(R.string.total_price),
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                modifier = Modifier.align(Alignment.End)
+            )
         }
         Row(
             modifier = Modifier
@@ -133,8 +140,11 @@ fun SelectOptionScreen(
 fun SelectOptionPreview() {
     CupcakeTheme {
         SelectOptionScreen(
-            subtotal = "299.99",
-            options = listOf("Option 1", "Option 2", "Option 3", "Option 4"),
+            title = R.string.choose_flavor,
+            options = DataSource.flavors,
+            onCancelButtonClicked = {},
+            onOptionSelected = {},
+            onNextButtonClicked = {},
             modifier = Modifier.fillMaxHeight()
         )
     }

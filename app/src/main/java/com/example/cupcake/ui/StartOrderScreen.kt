@@ -116,7 +116,8 @@ fun SelectQuantityButton(
 fun StartOrderPreview() {
     CupcakeTheme {
         StartOrderScreen(
-            quantityOptions = DataSource.quantityOptions,
+            viewModel = OrderViewModel(),
+            onNextButtonClicked = {},
             modifier = Modifier
                 .fillMaxSize()
                 .padding(dimensionResource(R.dimen.padding_medium))

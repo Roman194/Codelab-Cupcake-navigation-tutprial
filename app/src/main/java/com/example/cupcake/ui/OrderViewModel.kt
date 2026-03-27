@@ -16,6 +16,7 @@
 package com.example.cupcake.ui
 
 import androidx.lifecycle.ViewModel
+import com.example.cupcake.data.DataSource
 import com.example.cupcake.data.OrderUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,6 +44,11 @@ class OrderViewModel : ViewModel() {
      */
     private val _uiState = MutableStateFlow(OrderUiState(pickupOptions = pickupOptions()))
     val uiState: StateFlow<OrderUiState> = _uiState.asStateFlow()
+    
+    // Get the pickup options from the data source
+    val options = DataSource.quantityOptions.map { it.first }
+    val flavors = DataSource.flavors
+    val pickupOptions = pickupOptions()
 
     /**
      * Set the quantity [numberCupcakes] of cupcakes for this order's state and update the price
@@ -104,15 +110,8 @@ class OrderViewModel : ViewModel() {
     /**
      * Returns a list of date options starting with the current date and the following 3 dates.
      */
-    private fun pickupOptions(): List<String> {
-        val dateOptions = mutableListOf<String>()
-        val formatter = SimpleDateFormat("E MMM d", Locale.getDefault())
-        val calendar = Calendar.getInstance()
-        // add current date and the following 3 dates.
-        repeat(4) {
-            dateOptions.add(formatter.format(calendar.time))
-            calendar.add(Calendar.DATE, 1)
-        }
-        return dateOptions
+    // Get the initial pickup options from the data source
+    fun pickupOptions(): List<String> {
+        return DataSource.pickupDates
     }
 }
