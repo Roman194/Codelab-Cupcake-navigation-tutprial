@@ -45,7 +45,11 @@ import com.example.cupcake.ui.OrderViewModel
 import com.example.cupcake.ui.OrderSummaryScreen
 import com.example.cupcake.ui.SelectOptionScreen
 import com.example.cupcake.ui.StartOrderScreen
-//Qoder 1st prompt 1st attempt
+//Qoder 1st prompt 2nd attempt
+/**
+ * Круто! Но обрати внимание на currentScreen в CupcakeAppBar. Он должен использоваться для того,
+ * чтобы title в TopAppBar изменялся согласно открытому экрану
+ */
 /**
  * Enum class that defines the screens for the Cupcake order flow
  */
@@ -67,7 +71,7 @@ fun CupcakeAppBar(
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
-        title = { Text(stringResource(id = R.string.app_name)) },
+        title = { Text(currentScreen.title) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
