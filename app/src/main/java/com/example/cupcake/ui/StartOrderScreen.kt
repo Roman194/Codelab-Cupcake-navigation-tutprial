@@ -37,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cupcake.R
 import com.example.cupcake.data.DataSource
 import com.example.cupcake.ui.theme.CupcakeTheme
@@ -48,9 +49,11 @@ import com.example.cupcake.ui.theme.CupcakeTheme
  */
 @Composable
 fun StartOrderScreen(
-    quantityOptions: List<Pair<Int, Int>>,
+    viewModel: OrderViewModel = viewModel(),
+    onNextButtonClicked: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val quantityOptions = DataSource.quantityOptions
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.SpaceBetween
@@ -83,7 +86,7 @@ fun StartOrderScreen(
             quantityOptions.forEach { item ->
                 SelectQuantityButton(
                     labelResourceId = item.first,
-                    onClick = {}
+                    onClick = { onNextButtonClicked(item.second) }
                 )
             }
         }

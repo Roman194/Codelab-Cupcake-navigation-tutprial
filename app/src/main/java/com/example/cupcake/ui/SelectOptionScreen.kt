@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -49,9 +50,11 @@ import com.example.cupcake.ui.theme.CupcakeTheme
  */
 @Composable
 fun SelectOptionScreen(
-    subtotal: String,
+    title: Int,
     options: List<String>,
-    onSelectionChanged: (String) -> Unit = {},
+    onCancelButtonClicked: () -> Unit,
+    onOptionSelected: (String) -> Unit = {},
+    onNextButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var selectedValue by rememberSaveable { mutableStateOf("") }
@@ -61,13 +64,17 @@ fun SelectOptionScreen(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))) {
+            Text(
+                text = stringResource(title),
+                style = MaterialTheme.typography.headlineSmall
+            )
             options.forEach { item ->
                 Row(
                     modifier = Modifier.selectable(
                         selected = selectedValue == item,
                         onClick = {
                             selectedValue = item
-                            onSelectionChanged(item)
+                            onOptionSelected(item)
                         }
                     ),
                     verticalAlignment = Alignment.CenterVertically
@@ -76,7 +83,7 @@ fun SelectOptionScreen(
                         selected = selectedValue == item,
                         onClick = {
                             selectedValue = item
-                            onSelectionChanged(item)
+                            onOptionSelected(item)
                         }
                     )
                     Text(item)
@@ -87,7 +94,7 @@ fun SelectOptionScreen(
                 modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_medium))
             )
             FormattedPriceLabel(
-                subtotal = subtotal,
+                subtotal = "299.99",
                 modifier = Modifier
                     .align(Alignment.End)
                     .padding(
@@ -105,7 +112,7 @@ fun SelectOptionScreen(
         ) {
             OutlinedButton(
                 modifier = Modifier.weight(1f),
-                onClick = {}
+                onClick = onCancelButtonClicked
             ) {
                 Text(stringResource(R.string.cancel))
             }
@@ -113,7 +120,7 @@ fun SelectOptionScreen(
                 modifier = Modifier.weight(1f),
                 // the button is enabled when the user makes a selection
                 enabled = selectedValue.isNotEmpty(),
-                onClick = {}
+                onClick = onNextButtonClicked
             ) {
                 Text(stringResource(R.string.next))
             }

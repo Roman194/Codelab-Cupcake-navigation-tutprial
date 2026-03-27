@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,35 +47,12 @@ import com.example.cupcake.ui.theme.CupcakeTheme
  * lambda
  */
 @Composable
-fun OrderSummaryScreen(
-    orderUiState: OrderUiState,
+fun SummaryScreen(
+    orderViewModel: OrderViewModel,
+    onCancelButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val resources = LocalContext.current.resources
-
-    val numberOfCupcakes = resources.getQuantityString(
-        R.plurals.cupcakes,
-        orderUiState.quantity,
-        orderUiState.quantity
-    )
-    //Load and format a string resource with the parameters.
-    val orderSummary = stringResource(
-        R.string.order_details,
-        numberOfCupcakes,
-        orderUiState.flavor,
-        orderUiState.date,
-        orderUiState.quantity
-    )
-    val newOrder = stringResource(R.string.new_cupcake_order)
-    //Create a list of order summary to display
-    val items = listOf(
-        // Summary line 1: display selected quantity
-        Pair(stringResource(R.string.quantity), numberOfCupcakes),
-        // Summary line 2: display selected flavor
-        Pair(stringResource(R.string.flavor), orderUiState.flavor),
-        // Summary line 3: display selected pickup date
-        Pair(stringResource(R.string.pickup_date), orderUiState.date)
-    )
+    val orderUiState = orderViewModel.uiState.value
 
     Column(
         modifier = modifier,
@@ -84,35 +62,67 @@ fun OrderSummaryScreen(
             modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))
         ) {
-            items.forEach { item ->
-                Text(item.first.uppercase())
-                Text(text = item.second, fontWeight = FontWeight.Bold)
-                Divider(thickness = dimensionResource(R.dimen.thickness_divider))
-            }
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
+            Text(
+                text = stringResource(R.string.order_summary),
+                style = MaterialTheme.typography.headlineSmall
+            )
+            Text(
+                text = stringResource(R.string.summary_description),
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Divider(thickness = dimensionResource(R.dimen.thickness_divider))
+            Text(
+                text = stringResource(R.string.quantity),
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = orderUiState.quantity.toString(),
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+            )
+            Divider(thickness = dimensionResource(R.dimen.thickness_divider))
+            Text(
+                text = stringResource(R.string.flavor),
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = orderUiState.flavor,
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+            )
+            Divider(thickness = dimensionResource(R.dimen.thickness_divider))
+            Text(
+                text = stringResource(R.string.pickup_date),
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = orderUiState.date,
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+            )
+            Divider(thickness = dimensionResource(R.dimen.thickness_divider))
             FormattedPriceLabel(
                 subtotal = orderUiState.price,
                 modifier = Modifier.align(Alignment.End)
             )
         }
         Row(
-            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium)),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
+            verticalAlignment = Alignment.Bottom
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))
+            OutlinedButton(
+                modifier = Modifier.weight(1f),
+                onClick = onCancelButtonClicked
             ) {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {}
-                ) {
-                    Text(stringResource(R.string.send))
+                Text(stringResource(R.string.cancel))
+            }
+            Button(
+                modifier = Modifier.weight(1f),
+                onClick = {
+                    // TODO: Implement order confirmation
+                    // This would typically navigate back to the start screen
+                    // and reset the order
                 }
-                OutlinedButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {}
-                ) {
-                    Text(stringResource(R.string.cancel))
-                }
+            ) {
+                Text(stringResource(R.string.confirm))
             }
         }
     }
