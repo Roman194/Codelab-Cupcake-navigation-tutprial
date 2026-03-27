@@ -28,10 +28,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -41,7 +43,15 @@ import com.example.cupcake.ui.OrderSummaryScreen
 import com.example.cupcake.ui.SelectOptionScreen
 import com.example.cupcake.ui.StartOrderScreen
 
-//Cilo code 1st prompt 1st attempt
+//Cilo code 1st prompt 2nd attempt
+/**
+ * Круто! Но по каким-то причинам верхняя часть всех скринов обрезается под TopAppBar. Возможно дело
+ * в неиспользуемом innerPadding в CupcakeApp, но это лишь моё предположение на основе кода, который
+ * я вижу. Определи так ли это и реши этот UI-баг пожалуйста.
+ * Также обрати внимание на TopAppBar. На текущий момент заголовок в нём не изменяется в
+ * завыисимости от текущего открытого экрана. Также для экранов, в которых можно вернуться назад, не
+ * появляется соответствующий IconButton. Исправь это.
+ */
 /**
  * enum class that represents the screens in the cupcake ordering flow
  */
@@ -99,8 +109,12 @@ fun CupcakeApp(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    // Get current back stack entry
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     // Determine the current screen based on NavController's back stack
-    val currentScreen = when (navController.currentDestination?.route) {
+    val currentScreen = when (currentRoute) {
         CupcakeScreen.Flavor.name -> CupcakeScreen.Flavor
         CupcakeScreen.Date.name -> CupcakeScreen.Date
         CupcakeScreen.Summary.name -> CupcakeScreen.Summary
@@ -128,7 +142,7 @@ fun CupcakeApp(
         NavHost(
             navController = navController,
             startDestination = CupcakeScreen.StartOrder.name,
-            modifier = Modifier
+            modifier = Modifier.padding(innerPadding)
         ) {
             composable(CupcakeScreen.StartOrder.name) {
                 StartOrderScreen(
@@ -137,7 +151,7 @@ fun CupcakeApp(
                         viewModel.setQuantity(quantity)
                         navController.navigate(CupcakeScreen.Flavor.name)
                     },
-                    modifier = Modifier
+                    modifier = Modifier.padding(innerPadding)
                 )
             }
             composable(CupcakeScreen.Flavor.name) {
@@ -154,7 +168,7 @@ fun CupcakeApp(
                     onNextButtonClicked = {
                         navController.navigate(CupcakeScreen.Date.name)
                     },
-                    modifier = Modifier
+                    modifier = Modifier.padding(innerPadding)
                 )
             }
             composable(CupcakeScreen.Date.name) {
@@ -170,7 +184,7 @@ fun CupcakeApp(
                     onNextButtonClicked = {
                         navController.navigate(CupcakeScreen.Summary.name)
                     },
-                    modifier = Modifier
+                    modifier = Modifier.padding(innerPadding)
                 )
             }
             composable(CupcakeScreen.Summary.name) {
@@ -182,7 +196,7 @@ fun CupcakeApp(
                     onSendButtonClicked = {
                         // TODO: Implement order confirmation functionality
                     },
-                    modifier = Modifier
+                    modifier = Modifier.padding(innerPadding)
                 )
             }
         }
