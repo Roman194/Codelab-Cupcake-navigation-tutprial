@@ -15,7 +15,7 @@
  */
 package com.example.cupcake
 
-import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -32,8 +32,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.cupcake.R
+import com.example.cupcake.data.DataSource
+import com.example.cupcake.ui.OrderSummaryScreen
 import com.example.cupcake.ui.OrderViewModel
+import com.example.cupcake.ui.SelectOptionScreen
+import com.example.cupcake.ui.StartOrderScreen
+
+//Comate 1st prompt 1st attempt
+/**
+ * Represents the different screens in the Cupcake app navigation.
+ */
+enum class CupcakeScreen {
+    Start,
+    Flavor,
+    PickupDate,
+    Summary
+}
 
 /**
  * Composable that displays the topBar and displays back button if back navigation is possible.
@@ -68,17 +86,83 @@ fun CupcakeApp(
     viewModel: OrderViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
             CupcakeAppBar(
-                canNavigateBack = false,
-                navigateUp = { /* TODO: implement back navigation */ }
+                canNavigateBack = navController.previousBackStackEntry != null,
+                navigateUp = { navController.navigateUp() }
             )
         }
     ) { innerPadding ->
-        val uiState by viewModel.uiState.collectAsState()
-        innerPadding
-        //navigation should be there
+        NavHost(
+            navController = navController,
+            startDestination = CupcakeScreen.Start.name,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable(CupcakeScreen.Start.name) {
+                StartOrderScreen(
+                    quantityOptions = DataSource.quantityOptions,
+                    onNextButtonClicked = { quantity ->
+                        viewModel.setQuantity(quantity)
+                        navController.navigate(CupcakeScreen.Flavor.name)
+                    }
+                )
+            }
+            composable(CupcakeScreen.Flavor.name) {
+                val flavors = DataSource.flavors.map { stringResource(it) }
+                SelectOptionScreen(
+                    subtotal = uiState.price,
+                    options = flavors,
+                    onSelectionChanged = { flavor ->
+                        viewModel.setFlavor(flavor)
+                    },
+                    onCancelButtonClicked = {
+                        cancelOrderAndNavigateToStart(viewModel, navController)
+                    },
+                    onNextButtonClicked = {
+                        navController.navigate(CupcakeScreen.PickupDate.name)
+                    }
+                )
+            }
+            composable(CupcakeScreen.PickupDate.name) {
+                SelectOptionScreen(
+                    subtotal = uiState.price,
+                    options = uiState.pickupOptions,
+                    onSelectionChanged = { date ->
+                        viewModel.setDate(date)
+                    },
+                    onCancelButtonClicked = {
+                        cancelOrderAndNavigateToStart(viewModel, navController)
+                    },
+                    onNextButtonClicked = {
+                        navController.navigate(CupcakeScreen.Summary.name)
+                    }
+                )
+            }
+            composable(CupcakeScreen.Summary.name) {
+                OrderSummaryScreen(
+                    orderUiState = uiState,
+                    onCancelButtonClicked = {
+                        cancelOrderAndNavigateToStart(viewModel, navController)
+                    },
+                    onSendButtonClicked = {
+                        // TODO: Implement order confirmation
+                    }
+                )
+            }
+        }
     }
+}
+
+/**
+ * Resets the order and navigates to the start screen.
+ */
+private fun cancelOrderAndNavigateToStart(
+    viewModel: OrderViewModel,
+    navController: NavHostController
+) {
+    viewModel.resetOrder()
+    navController.popBackStack(CupcakeScreen.Start.name, inclusive = false)
 }
