@@ -34,6 +34,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.cupcake.R
 import com.example.cupcake.data.DataSource
@@ -42,7 +43,12 @@ import com.example.cupcake.ui.OrderViewModel
 import com.example.cupcake.ui.SelectOptionScreen
 import com.example.cupcake.ui.StartOrderScreen
 
-//Comate 1st prompt 1st attempt
+//Comate 1st prompt 2nd attempt
+/**
+ * Неплохо, но в StartOrderScreen.kt есть ошибка, связанная с отсутствием в Preview-функции
+ * обязательного параметра. Также сделай так, чтобы в title TopAppBar выводось название текущего
+ * экрана, а не просто статичная строка
+ */
 /**
  * Represents the different screens in the Cupcake app navigation.
  */
@@ -60,10 +66,11 @@ enum class CupcakeScreen {
 fun CupcakeAppBar(
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    title: String
 ) {
     TopAppBar(
-        title = { Text(stringResource(id = R.string.app_name)) },
+        title = { Text(title) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -87,12 +94,21 @@ fun CupcakeApp(
     navController: NavHostController = rememberNavController()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry?.destination?.route ?: CupcakeScreen.Start.name
 
     Scaffold(
         topBar = {
             CupcakeAppBar(
                 canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() }
+                navigateUp = { navController.navigateUp() },
+                title = when (currentRoute) {
+                    CupcakeScreen.Start.name -> stringResource(R.string.app_name)
+                    CupcakeScreen.Flavor.name -> stringResource(R.string.choose_flavor)
+                    CupcakeScreen.PickupDate.name -> stringResource(R.string.choose_pickup_date)
+                    CupcakeScreen.Summary.name -> stringResource(R.string.order_summary)
+                    else -> stringResource(R.string.app_name)
+                }
             )
         }
     ) { innerPadding ->
