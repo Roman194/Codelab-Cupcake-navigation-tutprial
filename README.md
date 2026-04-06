@@ -22,7 +22,7 @@ Getting Started
 
 Coding agents research
 ---------------
-This [codelab](https://developer.android.com/codelabs/basic-android-kotlin-compose-navigation) is used as the 1st prompt for the [coding agents android development compare]() research. Here in test/* branches you can see the generated code from all investigated AI-agents
+This [codelab](https://developer.android.com/codelabs/basic-android-kotlin-compose-navigation) is used as the 1st prompt for the [coding agents android development compare](https://github.com/Roman194/Coding-agents-android-development-compare) research. Here in test/* branches you can see the generated code from all investigated AI-agents
 
 Screenshots
 ---------------
